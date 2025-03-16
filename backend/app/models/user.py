@@ -4,6 +4,7 @@ from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
 from .experience import Experience
+from .education import Education
 
 
 # Shared properties
@@ -63,6 +64,8 @@ class User(UserBase, table=True):
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
     experiences: list[Experience] = Relationship(back_populates="user", cascade_delete=True)
+    educations: list["Education"] = Relationship(back_populates="user", cascade_delete=True)
+    projects: list["Project"] = Relationship(back_populates="user", cascade_delete=True)
 
 
 # Properties to return via API, id is always required
