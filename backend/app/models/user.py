@@ -1,5 +1,7 @@
 import uuid
 
+from typing import List, Optional
+
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -63,13 +65,17 @@ class NewPassword(SQLModel):
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    hashed_password: str
-    items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
-    experiences: list[Experience] = Relationship(back_populates="user", cascade_delete=True)
-    educations: list["Education"] = Relationship(back_populates="user", cascade_delete=True)
-    projects: list["Project"] = Relationship(back_populates="user", cascade_delete=True)
-    skills: list["Skill"] = Relationship(back_populates="user", cascade_delete=True)
-    certificates: list["Certificate"] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete"})
+    email: EmailStr = Field(unique=True, index=True)
+    hashed_password: str = Field()
+    is_active: bool = Field(default=True)
+    is_superuser: bool = Field(default=False)
+    items: List["Item"] = Relationship(back_populates="owner")
+    experiences: List["Experience"] = Relationship(back_populates="user")
+    educations: List["Education"] = Relationship(back_populates="user")
+    projects: List["Project"] = Relationship(back_populates="user")
+    skills: List["Skill"] = Relationship(back_populates="user")
+    certificates: List["Certificate"] = Relationship(back_populates="user")
+    courseworks: List["Coursework"] = Relationship(back_populates="user")
 
 
 # Properties to return via API, id is always required

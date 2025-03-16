@@ -8,6 +8,7 @@ from .project import Project, ProjectCreate, ProjectUpdate, ProjectPublic
 from .skill import Skill, SkillCreate, SkillUpdate, SkillPublic
 from .token import Token, TokenPayload
 from .user import User, UserCreate, UserUpdate, NewPassword, UserPublic, UpdatePassword, UserRegister, UsersPublic, UserUpdateMe
+from .coursework import Coursework, CourseworkCreate, CourseworkUpdate, CourseworkPublic
 from app.models.certificate import (
     Certificate,
     CertificateCreate,
@@ -49,5 +50,9 @@ __all__ = [
     "UserPublic",
     "UserRegister",
     "UsersPublic",
-    "UserUpdateMe"
+    "UserUpdateMe",
+    "Coursework",
+    "CourseworkCreate",
+    "CourseworkUpdate",
+    "CourseworkPublic"
 ]

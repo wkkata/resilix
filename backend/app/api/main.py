@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import items, login, private, users, utils, experiences, education
+from app.api.routes import items, login, private, users, utils, experiences, education, coursework
 from app.api.endpoints import project, skill, certificate
 
 api_router = APIRouter()
@@ -16,3 +16,4 @@ api_router.include_router(skill.router, prefix="/skills", tags=["skills"])
 api_router.include_router(
     certificate.router, prefix="/api/v1/certificates", tags=["certificates"]
 )
+api_router.include_router(coursework.router, prefix="/courseworks", tags=["courseworks"])
