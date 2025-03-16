@@ -4,7 +4,7 @@ from typing import Any
 from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
-from app.models import Item, ItemCreate, User, UserCreate, UserUpdate, Experience, ExperienceCreate, ExperienceUpdate, Education, EducationCreate, EducationUpdate, Project, ProjectCreate, ProjectUpdate
+from app.models import Item, ItemCreate, User, UserCreate, UserUpdate, Experience, ExperienceCreate, ExperienceUpdate, Education, EducationCreate, EducationUpdate, Project, ProjectCreate, ProjectUpdate, Skill, SkillCreate, SkillUpdate, Certificate, CertificateCreate, CertificateUpdate
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -142,4 +142,60 @@ def delete_project(*, session: Session, project_id: uuid.UUID) -> None:
     project = session.exec(statement).first()
     if project:
         session.delete(project)
+        session.commit()
+
+
+def create_skill(*, session: Session, skill_in: SkillCreate, user_id: uuid.UUID) -> Skill:
+    db_skill = Skill.model_validate(skill_in, update={"user_id": user_id})
+    session.add(db_skill)
+    session.commit()
+    session.refresh(db_skill)
+    return db_skill
+
+def get_skills(*, session: Session, user_id: uuid.UUID) -> list[Skill]:
+    statement = select(Skill).where(Skill.user_id == user_id)
+    skills = session.exec(statement).all()
+    return skills
+
+def update_skill(*, session: Session, db_skill: Skill, skill_in: SkillUpdate) -> Skill:
+    skill_data = skill_in.model_dump(exclude_unset=True)
+    db_skill.sqlmodel_update(skill_data)
+    session.add(db_skill)
+    session.commit()
+    session.refresh(db_skill)
+    return db_skill
+
+def delete_skill(*, session: Session, skill_id: uuid.UUID) -> None:
+    statement = select(Skill).where(Skill.id == skill_id)
+    skill = session.exec(statement).first()
+    if skill:
+        session.delete(skill)
+        session.commit()
+
+
+def create_certificate(*, session: Session, certificate_in: CertificateCreate, user_id: uuid.UUID) -> Certificate:
+    db_certificate = Certificate.model_validate(certificate_in, update={"user_id": user_id})
+    session.add(db_certificate)
+    session.commit()
+    session.refresh(db_certificate)
+    return db_certificate
+
+def get_certificates(*, session: Session, user_id: uuid.UUID) -> list[Certificate]:
+    statement = select(Certificate).where(Certificate.user_id == user_id)
+    certificates = session.exec(statement).all()
+    return certificates
+
+def update_certificate(*, session: Session, db_certificate: Certificate, certificate_in: CertificateUpdate) -> Certificate:
+    certificate_data = certificate_in.model_dump(exclude_unset=True)
+    db_certificate.sqlmodel_update(certificate_data)
+    session.add(db_certificate)
+    session.commit()
+    session.refresh(db_certificate)
+    return db_certificate
+
+def delete_certificate(*, session: Session, certificate_id: uuid.UUID) -> None:
+    statement = select(Certificate).where(Certificate.id == certificate_id)
+    certificate = session.exec(statement).first()
+    if certificate:
+        session.delete(certificate)
         session.commit()

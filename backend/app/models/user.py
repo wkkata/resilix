@@ -5,6 +5,8 @@ from sqlmodel import Field, Relationship, SQLModel
 
 from .experience import Experience
 from .education import Education
+from .skill import Skill
+from app.models.certificate import Certificate
 
 
 # Shared properties
@@ -66,6 +68,8 @@ class User(UserBase, table=True):
     experiences: list[Experience] = Relationship(back_populates="user", cascade_delete=True)
     educations: list["Education"] = Relationship(back_populates="user", cascade_delete=True)
     projects: list["Project"] = Relationship(back_populates="user", cascade_delete=True)
+    skills: list["Skill"] = Relationship(back_populates="user", cascade_delete=True)
+    certificates: list["Certificate"] = Relationship(back_populates="user", sa_relationship_kwargs={"cascade": "all, delete"})
 
 
 # Properties to return via API, id is always required

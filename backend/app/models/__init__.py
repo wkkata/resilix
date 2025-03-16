@@ -5,8 +5,15 @@ from .experience import Experience, ExperienceCreate, ExperienceUpdate, Experien
 from .item import Item, ItemCreate, ItemUpdate, ItemPublic, ItemsPublic
 from .message import Message
 from .project import Project, ProjectCreate, ProjectUpdate, ProjectPublic
+from .skill import Skill, SkillCreate, SkillUpdate, SkillPublic
 from .token import Token, TokenPayload
 from .user import User, UserCreate, UserUpdate, NewPassword, UserPublic, UpdatePassword, UserRegister, UsersPublic, UserUpdateMe
+from app.models.certificate import (
+    Certificate,
+    CertificateCreate,
+    CertificateUpdate,
+    CertificatePublic,
+)
 
 __all__ = [
     "SQLModel",
@@ -28,6 +35,10 @@ __all__ = [
     "ProjectCreate",
     "ProjectUpdate",
     "ProjectPublic",
+    "Skill",
+    "SkillCreate",
+    "SkillUpdate",
+    "SkillPublic",
     "Token",
     "TokenPayload",
     "User",
