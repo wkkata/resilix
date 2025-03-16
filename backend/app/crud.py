@@ -4,7 +4,7 @@ from typing import Any
 from sqlmodel import Session, select
 
 from app.core.security import get_password_hash, verify_password
-from app.models import Item, ItemCreate, User, UserCreate, UserUpdate, Experience, ExperienceCreate, ExperienceUpdate, Education, EducationCreate, EducationUpdate, Project, ProjectCreate, ProjectUpdate, Skill, SkillCreate, SkillUpdate, Certificate, CertificateCreate, CertificateUpdate
+from app.models import Item, ItemCreate, User, UserCreate, UserUpdate, Experience, ExperienceCreate, ExperienceUpdate, Education, EducationCreate, EducationUpdate, Project, ProjectCreate, ProjectUpdate, Skill, SkillCreate, SkillUpdate, Certificate, CertificateCreate, CertificateUpdate, Involvement, InvolvementCreate, InvolvementUpdate
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
@@ -198,4 +198,32 @@ def delete_certificate(*, session: Session, certificate_id: uuid.UUID) -> None:
     certificate = session.exec(statement).first()
     if certificate:
         session.delete(certificate)
+        session.commit()
+
+
+def create_involvement(*, session: Session, involvement_in: InvolvementCreate, user_id: uuid.UUID) -> Involvement:
+    db_involvement = Involvement.model_validate(involvement_in, update={"user_id": user_id})
+    session.add(db_involvement)
+    session.commit()
+    session.refresh(db_involvement)
+    return db_involvement
+
+def get_involvements(*, session: Session, user_id: uuid.UUID) -> list[Involvement]:
+    statement = select(Involvement).where(Involvement.user_id == user_id)
+    involvements = session.exec(statement).all()
+    return involvements
+
+def update_involvement(*, session: Session, db_involvement: Involvement, involvement_in: InvolvementUpdate) -> Involvement:
+    involvement_data = involvement_in.model_dump(exclude_unset=True)
+    db_involvement.sqlmodel_update(involvement_data)
+    session.add(db_involvement)
+    session.commit()
+    session.refresh(db_involvement)
+    return db_involvement
+
+def delete_involvement(*, session: Session, involvement_id: uuid.UUID) -> None:
+    statement = select(Involvement).where(Involvement.id == involvement_id)
+    involvement = session.exec(statement).first()
+    if involvement:
+        session.delete(involvement)
         session.commit()

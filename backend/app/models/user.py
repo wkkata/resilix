@@ -9,6 +9,7 @@ from .experience import Experience
 from .education import Education
 from .skill import Skill
 from app.models.certificate import Certificate
+from .involvement import Involvement
 
 
 # Shared properties
@@ -76,6 +77,7 @@ class User(UserBase, table=True):
     skills: List["Skill"] = Relationship(back_populates="user")
     certificates: List["Certificate"] = Relationship(back_populates="user")
     courseworks: List["Coursework"] = Relationship(back_populates="user")
+    involvements: List["Involvement"] = Relationship(back_populates="user")
 
 
 # Properties to return via API, id is always required

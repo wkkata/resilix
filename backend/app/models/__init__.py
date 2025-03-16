@@ -15,6 +15,7 @@ from app.models.certificate import (
     CertificateUpdate,
     CertificatePublic,
 )
+from .involvement import Involvement, InvolvementCreate, InvolvementUpdate, InvolvementPublic
 
 __all__ = [
     "SQLModel",
@@ -54,5 +55,9 @@ __all__ = [
     "Coursework",
     "CourseworkCreate",
     "CourseworkUpdate",
-    "CourseworkPublic"
+    "CourseworkPublic",
+    "Involvement",
+    "InvolvementCreate",
+    "InvolvementUpdate",
+    "InvolvementPublic"
 ]
