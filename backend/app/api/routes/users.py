@@ -24,7 +24,7 @@ from app.models import (
     UserUpdate,
     UserUpdateMe,
 )
-from app.utils import generate_new_account_email, send_email
+from app.utils import generate_new_account_email, send_email, generate_email_verification_token, generate_email_verification_email
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -152,6 +152,21 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
         )
     user_create = UserCreate.model_validate(user_in)
     user = crud.create_user(session=session, user_create=user_create)
+    
+    # 发送邮箱验证邮件
+    if settings.emails_enabled:
+        verification_token = generate_email_verification_token(email=user.email)
+        email_data = generate_email_verification_email(
+            email_to=user.email, 
+            username=user.full_name or user.email, 
+            token=verification_token
+        )
+        send_email(
+            email_to=user.email,
+            subject=email_data.subject,
+            html_content=email_data.html_content,
+        )
+    
     return user
 
 

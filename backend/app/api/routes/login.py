@@ -16,6 +16,9 @@ from app.utils import (
     generate_reset_password_email,
     send_email,
     verify_password_reset_token,
+    generate_email_verification_token,
+    generate_email_verification_email,
+    verify_email_token,
 )
 
 router = APIRouter(tags=["login"])
@@ -123,3 +126,50 @@ def recover_password_html_content(email: str, session: SessionDep) -> Any:
     return HTMLResponse(
         content=email_data.html_content, headers={"subject:": email_data.subject}
     )
+
+
+@router.post("/verify-email/")
+def verify_email(session: SessionDep, token: str) -> Message:
+    """
+    验证邮箱
+    """
+    email = verify_email_token(token=token)
+    if not email:
+        raise HTTPException(status_code=400, detail="无效的令牌")
+    user = crud.get_user_by_email(session=session, email=email)
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="系统中不存在使用此邮箱的用户。",
+        )
+    user.is_verified = True
+    session.add(user)
+    session.commit()
+    return Message(message="邮箱验证成功")
+
+
+@router.post("/send-verification-email/{email}")
+def send_verification_email(email: str, session: SessionDep) -> Message:
+    """
+    发送邮箱验证邮件
+    """
+    user = crud.get_user_by_email(session=session, email=email)
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="系统中不存在使用此邮箱的用户。",
+        )
+    if user.is_verified:
+        return Message(message="邮箱已经验证过了")
+    
+    verification_token = generate_email_verification_token(email=email)
+    email_data = generate_email_verification_email(
+        email_to=user.email, username=user.full_name or email, token=verification_token
+    )
+    send_email(
+        email_to=user.email,
+        subject=email_data.subject,
+        html_content=email_data.html_content,
+    )
+    return Message(message="验证邮件已发送")

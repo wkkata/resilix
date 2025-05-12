@@ -1,4 +1,5 @@
 from typing import List
+import uuid  # 添加这一行导入uuid模块
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
@@ -43,7 +44,7 @@ async def read_courseworks(
 async def read_coursework(
     *,
     db: Session = Depends(deps.get_session),
-    coursework_id: int,
+    coursework_id: uuid.UUID,  # 修改为uuid.UUID类型
     current_user: User = Depends(deps.get_current_user),
 ) -> Coursework:
     coursework = db.query(Coursework).filter(Coursework.id == coursework_id, Coursework.user_id == current_user.id).first()
@@ -55,7 +56,7 @@ async def read_coursework(
 async def update_coursework(
     *,
     db: Session = Depends(deps.get_session),
-    coursework_id: int,
+    coursework_id: uuid.UUID,  # 修改为uuid.UUID类型
     coursework_in: CourseworkUpdate,
     current_user: User = Depends(deps.get_current_user),
 ) -> Coursework:
@@ -76,7 +77,7 @@ async def update_coursework(
 async def delete_coursework(
     *,
     db: Session = Depends(deps.get_session),
-    coursework_id: int,
+    coursework_id: uuid.UUID,  # 修改为uuid.UUID类型
     current_user: User = Depends(deps.get_current_user),
 ) -> dict:
     coursework = db.query(Coursework).filter(Coursework.id == coursework_id, Coursework.user_id == current_user.id).first()

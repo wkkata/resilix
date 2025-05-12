@@ -70,6 +70,7 @@ class User(UserBase, table=True):
     hashed_password: str = Field()
     is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
+    is_verified: bool = Field(default=False)
     items: List["Item"] = Relationship(back_populates="owner")
     experiences: List["Experience"] = Relationship(back_populates="user")
     educations: List["Education"] = Relationship(back_populates="user")
