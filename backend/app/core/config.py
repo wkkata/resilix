@@ -94,6 +94,15 @@ class Settings(BaseSettings):
     EMAIL_TEST_USER: EmailStr = "test@example.com"
     FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
+    
+    # OpenAI API settings
+    OPENAI_API_KEY: str | None = None
+    OPENAI_API_BASE: HttpUrl | None = None
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def openai_enabled(self) -> bool:
+        return bool(self.OPENAI_API_KEY)
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
